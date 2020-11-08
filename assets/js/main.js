@@ -99,20 +99,20 @@
 			$banner = $('#banner');
 
 		// Disable animations/transitions until the page has loaded.
+			/*
 			$body.addClass('is-loading');
-
 			$window.on('load pageshow', function() {
 				window.setTimeout(function() {
 					$body.removeClass('is-loading');
 				}, 100);
 			});
-
 		// Clear transitioning state on unload/hide.
 			$window.on('unload pagehide', function() {
 				window.setTimeout(function() {
 					$('.is-transitioning').removeClass('is-transitioning');
 				}, 250);
 			});
+			*/
 
 		// Fix: Enable IE-only tweaks.
 			if (skel.vars.browser == 'ie' || skel.vars.browser == 'edge')
@@ -195,6 +195,67 @@
 					}
 
 			});
+
+		// Split Tiles.
+			var $splittile = $('.split_tile > article');
+
+			$splittile.each(function() {
+
+				var $this = $(this),
+					$image = $this.find('.image'), $img = $image.find('img'),
+					$link = $this.find('.link'),
+					x;
+
+				// Image.
+
+					// Set image.
+						$this.css('background-image', 'url(' + $img.attr('src') + ')');
+
+					// Set position.
+						if (x = $img.data('position'))
+							$image.css('background-position', x);
+
+					// Hide original.
+						$image.hide();
+
+				// Link.
+					if ($link.length > 0) {
+
+						$x = $link.clone()
+							.text('')
+							.addClass('primary')
+							.appendTo($this);
+
+						$link = $link.add($x);
+
+						$link.on('click', function(event) {
+
+							var href = $link.attr('href');
+
+							// Prevent default.
+								event.stopPropagation();
+								event.preventDefault();
+
+							// Start transitioning.
+								$this.addClass('is-transitioning');
+								$wrapper.addClass('is-transitioning');
+
+							// Redirect.
+								window.setTimeout(function() {
+
+									if ($link.attr('target') == '_blank')
+										window.open(href);
+									else
+										location.href = href;
+
+								}, 500);
+
+						});
+
+					}
+
+			});
+
 
 		// Header.
 			if (skel.vars.IEVersion < 9)
